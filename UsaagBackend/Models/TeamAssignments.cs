@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UsaagBackend.Models
 {
-    public class ProjectTeams
+    public class TeamAssignments
     {
         [Key, Column(Order = 1)]
         [ForeignKey("Teams")]

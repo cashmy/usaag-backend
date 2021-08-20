@@ -22,7 +22,7 @@ namespace UsaagBackend.Data
         public DbSet<CohortStudents> CohortStudents { get; set; }
         public DbSet<Teams> Teams { get; set; }
         //public DbSet<TeamAssignments> TeamAssignments { get; set; }
-        public DbSet<ProjectTeams> ProjectTeams { get; set; }
+        public DbSet<TeamAssignments> TeamAssignments { get; set; }
         public DbSet<Projects> Projects { get; set; }
         public DbSet<ProjectDetails> ProjectDetails { get; set; }
         //public DbSet<ProjectTeams> ProjectTeams { get; set; }
@@ -63,7 +63,7 @@ namespace UsaagBackend.Data
                 .Property(t => t.AutoGenName)
                 .HasDefaultValue(false);
 
-            modelBuilder.Entity<ProjectTeams>();
+            modelBuilder.Entity<TeamAssignments>();
 
             //modelBuilder.Entity<TeamAssignments>();
             modelBuilder.Entity<Projects>();

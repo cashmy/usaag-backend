@@ -8,11 +8,11 @@ namespace UsaagBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectTeamsController : ControllerBase
+    public class TeamAssignmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public ProjectTeamsController(ApplicationDbContext context)
+        public TeamAssignmentsController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -54,7 +54,7 @@ namespace UsaagBackend.Controllers
         // ***** ADD A Student to a Project Team *****
         // POST <baseurl/api/projectTeams/<teamId>/
         [HttpPost("{TeamId}")]
-        public IActionResult Post(int TeamId, [FromBody] ProjectTeams value)
+        public IActionResult Post(int TeamId, [FromBody] TeamAssignments value)
         {
             _context.ProjectTeams.Add(value);
             _context.SaveChanges();
@@ -64,7 +64,7 @@ namespace UsaagBackend.Controllers
         // ***** UPDATE Student Project Info in a Project Team *****
         // UPDATE <baseurl/api/projectTeams/<teamId>/<studentId>
         [HttpPut("{TeamId}/{StudentId}")]
-        public IActionResult Put(int TeamId, int StudentId, [FromBody] ProjectTeams value)
+        public IActionResult Put(int TeamId, int StudentId, [FromBody] TeamAssignments value)
         {
             var studentProjectInfo = _context.ProjectTeams
                 .Where(pt => pt.TeamId == TeamId && pt.StudentId == StudentId)
