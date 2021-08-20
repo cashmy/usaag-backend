@@ -20,6 +20,7 @@ namespace UsaagBackend.Models
         public float TotalPointsScored { get; set; }
         public float TotalWeightedPointsScored { get; set; }
         public bool ProjectSubmitted { get; set; }
+        public string ReflectionResponse { get; set; }
 
     }
 }
