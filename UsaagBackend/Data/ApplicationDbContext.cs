@@ -19,6 +19,7 @@ namespace UsaagBackend.Data
         public DbSet<CurriculumTemplateList> CurriculumTemplateList { get; set; }
         public DbSet<Cohorts> Cohorts { get; set; }
         public DbSet<Students> Students { get; set; }
+        public DbSet<CohortStudents> CohortStudents { get; set; }
         public DbSet<Teams> Teams { get; set; }
         //public DbSet<TeamAssignments> TeamAssignments { get; set; }
         public DbSet<Projects> Projects { get; set; }
@@ -50,6 +51,9 @@ namespace UsaagBackend.Data
                 .HasDefaultValue(false);
 
             modelBuilder.Entity<Students>();
+
+            modelBuilder.Entity<CohortStudents>()
+                .HasKey(cs => new { cs.CohortId, cs.StudentId });
             
             modelBuilder.Entity<Teams>()
                 .Property(t => t.Group)

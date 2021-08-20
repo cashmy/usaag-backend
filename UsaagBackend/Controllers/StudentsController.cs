@@ -69,9 +69,6 @@ namespace UsaagBackend.Controllers
             student.LastName = value.LastName;
             student.InstructorSlackChannel = value.InstructorSlackChannel;
 
-            // Foreign key field
-            student.CohortId = value.CohortId;
-
             _context.Students.Update(student);
             _context.SaveChanges();
             return StatusCode(201, student);

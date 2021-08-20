@@ -10,8 +10,5 @@ namespace UsaagBackend.Models
         public string LastName { get; set; }
         public string InstructorSlackChannel { get; set; }
 
-        [ForeignKey("Cohorts")]
-        public int CohortId { get; set; }
-        public Cohorts Cohorts { get; set; }
     }
 }
