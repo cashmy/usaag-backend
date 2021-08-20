@@ -48,7 +48,7 @@ namespace UsaagBackend.Controllers
         public IActionResult Delete(int CohortId, int StudentId)
         {
             var cohortStudents = _context.CohortStudents
-                .Where(ctl => cs.CohortId == CohortId && cs.StudentId == StudentId)
+                .Where(cs => cs.CohortId == CohortId && cs.StudentId == StudentId)
                 .SingleOrDefault();
 
             if (cohortStudents == null)

@@ -38,7 +38,6 @@ namespace UsaagBackend.Controllers
         {
             var student = _context.Students
                 .Where(s => s.Id == Id)
-                .Include(s => s.Cohorts)
                 .SingleOrDefault();
             return Ok(student);
         }
