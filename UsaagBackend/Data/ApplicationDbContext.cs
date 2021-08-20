@@ -23,7 +23,7 @@ namespace UsaagBackend.Data
         public DbSet<Teams> Teams { get; set; }
         //public DbSet<TeamAssignments> TeamAssignments { get; set; }
         public DbSet<TeamAssignments> TeamAssignments { get; set; }
-        public DbSet<Projects> Projects { get; set; }
+        public DbSet<ProjectHeader> ProjectHeader { get; set; }
         public DbSet<ProjectDetails> ProjectDetails { get; set; }
         //public DbSet<ProjectTeams> ProjectTeams { get; set; }
         public DbSet<TemplateHeader> TemplateHeader { get; set; }
@@ -67,7 +67,7 @@ namespace UsaagBackend.Data
                 .HasKey(ta => new { ta.TeamId, ta.StudentId });
 
             //modelBuilder.Entity<TeamAssignments>();
-            modelBuilder.Entity<Projects>();
+            modelBuilder.Entity<ProjectHeader>();
             
             modelBuilder.Entity<ProjectDetails>()
                 .HasKey(pd => new { pd.ProjectId, pd.Id });
