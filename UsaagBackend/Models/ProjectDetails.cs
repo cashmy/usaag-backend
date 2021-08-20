@@ -9,7 +9,7 @@ namespace UsaagBackend.Models
         [Key, Column(Order = 1)]
         [ForeignKey("Projects")]
         public int ProjectId { get; set; }
-        public Projects Projects { get; set; }
+        public ProjectHeader ProjectHeader { get; set; }
 
         [Key, Column(Order = 2)]
         public int Id { get; set; }
@@ -21,7 +21,7 @@ namespace UsaagBackend.Models
         public int PointValue { get; set; }
         public bool BonusStatus { get; set; }
 
-        public char Status { get; set; }
+        public char Status { get; set; }    // Color status for R,O,Y,Lg,G
         public int PercentComplete { get; set; } // Four options only: 0, 25 50 75, 100
 
 
@@ -33,5 +33,9 @@ namespace UsaagBackend.Models
         [ForeignKey("Students")]
         public int? StudentId { get; set; }
         public Students Students { get; set; }
+
+        public DateTime StartedTimeStamp { get; set; }
+        public DateTime CompletedTimeStamp { get; set; }
+
     }
 }

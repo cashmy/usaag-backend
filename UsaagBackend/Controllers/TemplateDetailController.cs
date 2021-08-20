@@ -32,7 +32,7 @@ namespace UsaagBackend.Controllers
             return Ok(templateDetails);
         }
 
-        // ***** ADD A Template Deatil for a Header *****
+        // ***** ADD A Template Detail for a Header *****
         // POST /api/templateDetail/
         [HttpPost]
         public  IActionResult Post([FromBody]TemplateDetail value) 

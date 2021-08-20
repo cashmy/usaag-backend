@@ -66,7 +66,6 @@ namespace UsaagBackend.Data
             modelBuilder.Entity<TeamAssignments>()
                 .HasKey(ta => new { ta.TeamId, ta.StudentId });
 
-            //modelBuilder.Entity<TeamAssignments>();
             modelBuilder.Entity<ProjectHeader>();
             
             modelBuilder.Entity<ProjectDetails>()
@@ -74,10 +73,8 @@ namespace UsaagBackend.Data
             modelBuilder.Entity<ProjectDetails>()
                 .Property(pd => pd.BonusStatus)
                 .HasDefaultValue(false);
-            
-            //modelBuilder.Entity<ProjectTeams>()
-            //    .Property(pt => pt.ProjectStatus)
-            //     .HasDefaultValue(false);
+           
+
             modelBuilder.Entity<TemplateHeader>();
 
             modelBuilder.Entity<TemplateDetail>()
