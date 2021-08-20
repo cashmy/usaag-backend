@@ -22,7 +22,7 @@ namespace UsaagBackend.Controllers
         [HttpGet]
         public IActionResult Get(int TeamId)
         {
-            var studentList = _context.ProjectTeams
+            var studentList = _context.TeamAssignments
                 .Where(pt => pt.TeamId == TeamId)
                 .Include(pt => pt.Students)
                 .ToList();
@@ -39,7 +39,7 @@ namespace UsaagBackend.Controllers
         public IActionResult Get(int TeamId, int StudentId)
         {
 
-            var studentProjectInfo = _context.ProjectTeams
+            var studentProjectInfo = _context.TeamAssignments
                 .Where(pt => pt.TeamId == TeamId && pt.StudentId == StudentId)
                 .Include(pt => pt.Students)
                 .ToList();
@@ -56,7 +56,7 @@ namespace UsaagBackend.Controllers
         [HttpPost("{TeamId}")]
         public IActionResult Post(int TeamId, [FromBody] TeamAssignments value)
         {
-            _context.ProjectTeams.Add(value);
+            _context.TeamAssignments.Add(value);
             _context.SaveChanges();
             return StatusCode(201, value);
         }
@@ -66,7 +66,7 @@ namespace UsaagBackend.Controllers
         [HttpPut("{TeamId}/{StudentId}")]
         public IActionResult Put(int TeamId, int StudentId, [FromBody] TeamAssignments value)
         {
-            var studentProjectInfo = _context.ProjectTeams
+            var studentProjectInfo = _context.TeamAssignments
                 .Where(pt => pt.TeamId == TeamId && pt.StudentId == StudentId)
                 .SingleOrDefault();
             if (studentProjectInfo == null)
@@ -78,7 +78,7 @@ namespace UsaagBackend.Controllers
             studentProjectInfo.ProjectSubmitted = value.ProjectSubmitted;
             studentProjectInfo.ReflectionResponse = value.ReflectionResponse;
 
-            _context.ProjectTeams.Update(studentProjectInfo);
+            _context.TeamAssignments.Update(studentProjectInfo);
             _context.SaveChanges();
             return StatusCode(201, studentProjectInfo);
         }
@@ -89,7 +89,7 @@ namespace UsaagBackend.Controllers
         public IActionResult Delete(int TeamId, int StudentId)
         {
 
-            var studentProjectInfo = _context.ProjectTeams
+            var studentProjectInfo = _context.TeamAssignments
                  .Where(pt => pt.TeamId == TeamId && pt.StudentId == StudentId)
                 .SingleOrDefault();
             if (studentProjectInfo == null)
@@ -97,7 +97,7 @@ namespace UsaagBackend.Controllers
                 return NotFound("Requested record not found.");
             }
 
-            _context.ProjectTeams.Remove(studentProjectInfo);
+            _context.TeamAssignments.Remove(studentProjectInfo);
             _context.SaveChanges();
             return StatusCode(204, studentProjectInfo);
         }

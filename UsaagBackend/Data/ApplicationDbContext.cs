@@ -63,7 +63,8 @@ namespace UsaagBackend.Data
                 .Property(t => t.AutoGenName)
                 .HasDefaultValue(false);
 
-            modelBuilder.Entity<TeamAssignments>();
+            modelBuilder.Entity<TeamAssignments>()
+                .HasKey(ta => new { ta.TeamId, ta.StudentId });
 
             //modelBuilder.Entity<TeamAssignments>();
             modelBuilder.Entity<Projects>();

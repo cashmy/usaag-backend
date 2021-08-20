@@ -1,6 +1,7 @@
 ﻿using UsaagBackend.Data;
 using UsaagBackend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace UsaagBackend.Controllers
@@ -21,7 +22,10 @@ namespace UsaagBackend.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var teams = _context.Teams.ToList();
+            var teams = _context.Teams
+                .Include(t => t.Cohorts )
+                .Include(t => t.TemplateHeader)
+                .ToList();
             if (teams == null)
             {
                 return NotFound();
@@ -65,6 +69,10 @@ namespace UsaagBackend.Controllers
             team.AutoGenName = value.AutoGenName;
             team.GitHubRepository = value.GitHubRepository;
             team.TeamTrelloBoard = value.TeamTrelloBoard;
+
+            // Foreign Key Fields
+            team.CohortId = value.CohortId;
+            team.HeaderId = value.HeaderId;
 
 
             _context.Teams.Update(team);
