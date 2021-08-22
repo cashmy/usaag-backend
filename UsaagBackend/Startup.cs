@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UsaagBackend.Data;
+using UsaagBackend.Extensions;
 
 namespace UsaagBackend
 {
@@ -31,7 +33,8 @@ namespace UsaagBackend
             // services.ConfigureCors();
             services.AddDbContext<ApplicationDbContext>(opts =>
                             opts.UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
-
+            services.ConfigureCors();
+            services.ConfigureSqlContext(Configuration);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -51,7 +54,10 @@ namespace UsaagBackend
 
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
-
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
             app.UseRouting();
 
             app.UseAuthorization();
