@@ -83,6 +83,8 @@ namespace UsaagBackend.Controllers
                 return NotFound("Requested record not found.");
             }
 
+            // TODO Verify that a cascade delete occurs in CohortStudents as well.
+
             _context.Cohorts.Remove(cohort);
             _context.SaveChanges();
             return StatusCode(204, cohort);

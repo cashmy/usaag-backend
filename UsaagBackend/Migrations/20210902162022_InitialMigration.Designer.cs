@@ -10,8 +10,8 @@ using UsaagBackend.Data;
 namespace UsaagBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210818131805_addCurriculumTheme")]
-    partial class addCurriculumTheme
+    [Migration("20210902162022_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -217,6 +217,21 @@ namespace UsaagBackend.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("UsaagBackend.Models.CohortStudents", b =>
+                {
+                    b.Property<int>("CohortId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CohortId", "StudentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("CohortStudents");
+                });
+
             modelBuilder.Entity("UsaagBackend.Models.Cohorts", b =>
                 {
                     b.Property<int>("Id")
@@ -238,6 +253,30 @@ namespace UsaagBackend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cohorts");
+                });
+
+            modelBuilder.Entity("UsaagBackend.Models.CurriculumTemplateList", b =>
+                {
+                    b.Property<int>("ThemeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AssignmentSequence")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DayToAssign")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectDays")
+                        .HasColumnType("int");
+
+                    b.HasKey("ThemeId", "HeaderId");
+
+                    b.HasIndex("HeaderId");
+
+                    b.ToTable("CurriculumTemplateList");
                 });
 
             modelBuilder.Entity("UsaagBackend.Models.CurriculumThemes", b =>
@@ -277,6 +316,9 @@ namespace UsaagBackend.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<DateTime>("CompletedTimeStamp")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -293,6 +335,12 @@ namespace UsaagBackend.Migrations
                     b.Property<float>("PointsScored")
                         .HasColumnType("real");
 
+                    b.Property<int?>("ProjectHeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartedTimeStamp")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
@@ -305,12 +353,14 @@ namespace UsaagBackend.Migrations
 
                     b.HasKey("ProjectId", "Id");
 
+                    b.HasIndex("ProjectHeaderId");
+
                     b.HasIndex("StudentId");
 
                     b.ToTable("ProjectDetails");
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.Projects", b =>
+            modelBuilder.Entity("UsaagBackend.Models.ProjectHeader", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -320,21 +370,18 @@ namespace UsaagBackend.Migrations
                     b.Property<int>("CohortId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateAssigned")
+                    b.Property<DateTime>("DateAssigned")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateDue")
+                    b.Property<DateTime>("DateDue")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("HeaderId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
-
-                    b.Property<string>("TemplateVersionUsed")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("TotalPoints")
                         .HasColumnType("real");
@@ -346,7 +393,9 @@ namespace UsaagBackend.Migrations
 
                     b.HasIndex("CohortId");
 
-                    b.ToTable("Projects");
+                    b.HasIndex("HeaderId");
+
+                    b.ToTable("ProjectHeader");
                 });
 
             modelBuilder.Entity("UsaagBackend.Models.Students", b =>
@@ -355,9 +404,6 @@ namespace UsaagBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CohortId")
-                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
@@ -370,9 +416,34 @@ namespace UsaagBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CohortId");
-
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("UsaagBackend.Models.TeamAssignments", b =>
+                {
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ProjectSubmitted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReflectionResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("TotalPointsScored")
+                        .HasColumnType("real");
+
+                    b.Property<float>("TotalWeightedPointsScored")
+                        .HasColumnType("real");
+
+                    b.HasKey("TeamId", "StudentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("TeamAssignments");
                 });
 
             modelBuilder.Entity("UsaagBackend.Models.Teams", b =>
@@ -387,6 +458,9 @@ namespace UsaagBackend.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<int>("CohortId")
+                        .HasColumnType("int");
+
                     b.Property<string>("GitHubRepository")
                         .HasColumnType("nvarchar(max)");
 
@@ -395,6 +469,9 @@ namespace UsaagBackend.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<int>("HeaderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -402,6 +479,10 @@ namespace UsaagBackend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CohortId");
+
+                    b.HasIndex("HeaderId");
 
                     b.ToTable("Teams");
                 });
@@ -535,35 +616,60 @@ namespace UsaagBackend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.ProjectDetails", b =>
+            modelBuilder.Entity("UsaagBackend.Models.CohortStudents", b =>
                 {
-                    b.HasOne("UsaagBackend.Models.Projects", "Projects")
+                    b.HasOne("UsaagBackend.Models.Cohorts", "Cohorts")
                         .WithMany()
-                        .HasForeignKey("ProjectId")
+                        .HasForeignKey("CohortId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("UsaagBackend.Models.Students", "Students")
                         .WithMany()
-                        .HasForeignKey("StudentId");
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Projects");
+                    b.Navigation("Cohorts");
 
                     b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.Projects", b =>
+            modelBuilder.Entity("UsaagBackend.Models.CurriculumTemplateList", b =>
                 {
-                    b.HasOne("UsaagBackend.Models.Cohorts", "Cohorts")
+                    b.HasOne("UsaagBackend.Models.TemplateHeader", "TemplateHeader")
                         .WithMany()
-                        .HasForeignKey("CohortId")
+                        .HasForeignKey("HeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cohorts");
+                    b.HasOne("UsaagBackend.Models.CurriculumThemes", "CurriculumThemes")
+                        .WithMany()
+                        .HasForeignKey("ThemeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CurriculumThemes");
+
+                    b.Navigation("TemplateHeader");
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.Students", b =>
+            modelBuilder.Entity("UsaagBackend.Models.ProjectDetails", b =>
+                {
+                    b.HasOne("UsaagBackend.Models.ProjectHeader", "ProjectHeader")
+                        .WithMany()
+                        .HasForeignKey("ProjectHeaderId");
+
+                    b.HasOne("UsaagBackend.Models.Students", "Students")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("ProjectHeader");
+
+                    b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("UsaagBackend.Models.ProjectHeader", b =>
                 {
                     b.HasOne("UsaagBackend.Models.Cohorts", "Cohorts")
                         .WithMany()
@@ -571,7 +677,53 @@ namespace UsaagBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("UsaagBackend.Models.TemplateHeader", "TemplateHeader")
+                        .WithMany()
+                        .HasForeignKey("HeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cohorts");
+
+                    b.Navigation("TemplateHeader");
+                });
+
+            modelBuilder.Entity("UsaagBackend.Models.TeamAssignments", b =>
+                {
+                    b.HasOne("UsaagBackend.Models.Students", "Students")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UsaagBackend.Models.Teams", "Teams")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Students");
+
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("UsaagBackend.Models.Teams", b =>
+                {
+                    b.HasOne("UsaagBackend.Models.Cohorts", "Cohorts")
+                        .WithMany()
+                        .HasForeignKey("CohortId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UsaagBackend.Models.TemplateHeader", "TemplateHeader")
+                        .WithMany()
+                        .HasForeignKey("HeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cohorts");
+
+                    b.Navigation("TemplateHeader");
                 });
 
             modelBuilder.Entity("UsaagBackend.Models.TemplateDetail", b =>

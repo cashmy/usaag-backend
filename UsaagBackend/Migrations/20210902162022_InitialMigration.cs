@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UsaagBackend.Migrations
 {
-    public partial class addFKsToTeamModel : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -222,32 +222,6 @@ namespace UsaagBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CohortId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalPoints = table.Column<float>(type: "real", nullable: false),
-                    TotalWeightedPoints = table.Column<float>(type: "real", nullable: false),
-                    DateAssigned = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateDue = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(1)", nullable: false),
-                    TemplateVersionUsed = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Projects_Cohorts_CohortId",
-                        column: x => x.CohortId,
-                        principalTable: "Cohorts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CohortStudents",
                 columns: table => new
                 {
@@ -292,6 +266,37 @@ namespace UsaagBackend.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CurriculumTemplateList_TemplateHeader_HeaderId",
+                        column: x => x.HeaderId,
+                        principalTable: "TemplateHeader",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectHeader",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    HeaderId = table.Column<int>(type: "int", nullable: false),
+                    CohortId = table.Column<int>(type: "int", nullable: false),
+                    TotalPoints = table.Column<float>(type: "real", nullable: false),
+                    TotalWeightedPoints = table.Column<float>(type: "real", nullable: false),
+                    DateAssigned = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateDue = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectHeader", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProjectHeader_Cohorts_CohortId",
+                        column: x => x.CohortId,
+                        principalTable: "Cohorts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectHeader_TemplateHeader_HeaderId",
                         column: x => x.HeaderId,
                         principalTable: "TemplateHeader",
                         principalColumn: "Id",
@@ -358,6 +363,7 @@ namespace UsaagBackend.Migrations
                 {
                     ProjectId = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
+                    ProjectHeaderId = table.Column<int>(type: "int", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     PointValue = table.Column<int>(type: "int", nullable: false),
@@ -374,11 +380,11 @@ namespace UsaagBackend.Migrations
                 {
                     table.PrimaryKey("PK_ProjectDetails", x => new { x.ProjectId, x.Id });
                     table.ForeignKey(
-                        name: "FK_ProjectDetails_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
+                        name: "FK_ProjectDetails_ProjectHeader_ProjectHeaderId",
+                        column: x => x.ProjectHeaderId,
+                        principalTable: "ProjectHeader",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ProjectDetails_Students_StudentId",
                         column: x => x.StudentId,
@@ -465,14 +471,24 @@ namespace UsaagBackend.Migrations
                 column: "HeaderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectDetails_ProjectHeaderId",
+                table: "ProjectDetails",
+                column: "ProjectHeaderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProjectDetails_StudentId",
                 table: "ProjectDetails",
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_CohortId",
-                table: "Projects",
+                name: "IX_ProjectHeader_CohortId",
+                table: "ProjectHeader",
                 column: "CohortId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectHeader_HeaderId",
+                table: "ProjectHeader",
+                column: "HeaderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamAssignments_StudentId",
@@ -532,7 +548,7 @@ namespace UsaagBackend.Migrations
                 name: "CurriculumThemes");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "ProjectHeader");
 
             migrationBuilder.DropTable(
                 name: "Students");
