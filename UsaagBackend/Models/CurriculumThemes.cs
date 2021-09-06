@@ -12,5 +12,7 @@ namespace UsaagBackend.Models
         public string TechnologyStack { get; set; }
         public int NumberOfWeeks { get; set; }
         public bool DayTimeStatus { get; set; }
+        public string Level { get; set; }  // Beginner, Intermediate, Advanced
+
     }
 }

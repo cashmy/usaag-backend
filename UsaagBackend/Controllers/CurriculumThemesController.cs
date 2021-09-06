@@ -66,6 +66,7 @@ namespace UsaagBackend.Controllers
             curriculumTheme.TechnologyStack = value.TechnologyStack;
             curriculumTheme.NumberOfWeeks = value.NumberOfWeeks;
             curriculumTheme.DayTimeStatus = value.DayTimeStatus;
+            curriculumTheme.Level = value.Level;
 
 
             _context.CurriculumThemes.Update(curriculumTheme);
