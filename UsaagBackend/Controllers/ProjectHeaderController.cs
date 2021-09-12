@@ -67,6 +67,8 @@ namespace UsaagBackend.Controllers
                 return NotFound("Requested record not found.");
             }
 
+            projectHeader.HeaderId = value.HeaderId;
+            projectHeader.CohortId = value.CohortId;
             projectHeader.TotalPoints = value.TotalPoints;
             projectHeader.TotalWeightedPoints = value.TotalWeightedPoints;
             projectHeader.DateAssigned = value.DateAssigned;
