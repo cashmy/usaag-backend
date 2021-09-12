@@ -18,6 +18,8 @@ namespace UsaagBackend.Models
         public float TotalPoints { get; set; }
         public float TotalWeightedPoints { get; set; }
 
+        public bool? Archived { get; set; }
+
         // Version Format 0.0.0 (Main.Minor.Sub)
         public int VersionMain { get; set; }
         public int VersionMinor { get; set; }

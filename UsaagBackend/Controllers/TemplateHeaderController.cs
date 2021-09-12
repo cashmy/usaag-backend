@@ -110,6 +110,7 @@ namespace UsaagBackend.Controllers
             templateHeader.NotionScript = value.NotionScript;
             templateHeader.Abbreviation = value.Abbreviation;
             templateHeader.TechnologyStack = value.TechnologyStack;
+            templateHeader.Archived = value.Archived;
 
             _context.TemplateHeader.Update(templateHeader);
             _context.SaveChanges();

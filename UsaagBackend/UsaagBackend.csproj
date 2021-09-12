@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="DesignDocuments\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
