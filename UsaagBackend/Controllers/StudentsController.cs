@@ -31,9 +31,39 @@ namespace UsaagBackend.Controllers
             return Ok(students);
         }
 
-        // ***** GET A Student by ID *****
+        // ***** GET ALL Students by Archive Status *****
         // <baseurl/api/students
-        [HttpGet("{Id}")]
+        [HttpGet("archive/{Status}")]
+        public IActionResult GetStatus(bool Status)
+        {
+            var students = _context.Students
+                .Where(s => s.Archived == Status)
+                .ToList();
+            if (students == null)
+            {
+                return NotFound();
+            }
+            return Ok(students);
+        }
+
+        // ***** GET ALL Unassigned Students *****
+        // <baseurl/api/students/unassigned
+        [HttpGet("unassigned")]
+        public IActionResult GetUnassigned()
+        {
+            var students = _context.Students.ToList()
+                .Where(s => s.CohortId == null); 
+
+            if (students == null)
+            {
+                return NotFound();
+            }
+            return Ok(students);
+        }
+
+            // ***** GET A Student by ID *****
+            // <baseurl/api/students
+            [HttpGet("{Id}")]
         public IActionResult GetById(int Id)
         {
             var student = _context.Students
@@ -67,6 +97,8 @@ namespace UsaagBackend.Controllers
             student.FirstName = value.FirstName;
             student.LastName = value.LastName;
             student.InstructorSlackChannel = value.InstructorSlackChannel;
+            student.CohortId = value.CohortId;
+            student.Archived = value.Archived;
 
             _context.Students.Update(student);
             _context.SaveChanges();

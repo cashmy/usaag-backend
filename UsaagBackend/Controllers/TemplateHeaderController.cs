@@ -18,10 +18,12 @@ namespace UsaagBackend.Controllers
 
         // ***** GET ALL Template Headers *****
         // <baseurl/api/templateheader
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("archive/{Status}")]
+        public IActionResult Get(bool Status)
         {
-            var templateHeaders = _context.TemplateHeader.ToList();
+            var templateHeaders = _context.TemplateHeader
+                .Where(th => th.Archived == Status)
+                .ToList();
             if (templateHeaders == null)
             {
                 return NotFound();
@@ -48,7 +50,6 @@ namespace UsaagBackend.Controllers
         {
             var templateHeader = _context.TemplateHeader
                 .Where(th => th.Id == Id && th.VersionMain == Main && th.VersionMinor == Minor && th.VersionSub == Sub)
-
                 .SingleOrDefault();
             return Ok(templateHeader);
         }

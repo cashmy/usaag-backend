@@ -9,6 +9,10 @@ namespace UsaagBackend.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string InstructorSlackChannel { get; set; }
+        public bool? Archived { get; set; }
 
+        [ForeignKey("Cohorts")]
+        public int? CohortId { get; set; }
+        public Cohorts Cohorts { get; set; }
     }
 }

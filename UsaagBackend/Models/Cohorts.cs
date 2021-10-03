@@ -12,6 +12,5 @@ namespace UsaagBackend.Models
         public string SlackChannel { get; set; }
         public bool? Archived { get; set; }
         public string CPKColor { get; set; }
-
     }
 }

@@ -50,8 +50,13 @@ namespace UsaagBackend.Data
             modelBuilder.Entity<Cohorts>()
                 .Property(c => c.Archived)
                 .HasDefaultValue(false);
+            modelBuilder.Entity<Cohorts>()
+                .Property(c => c.CPKColor)
+                .HasDefaultValue("#bdbdbd");
 
-            modelBuilder.Entity<Students>();
+            modelBuilder.Entity<Students>()
+                .Property(c => c.Archived)
+                .HasDefaultValue(false);
 
             modelBuilder.Entity<CohortStudents>()
                 .HasKey(cs => new { cs.CohortId, cs.StudentId });
@@ -73,9 +78,11 @@ namespace UsaagBackend.Data
             modelBuilder.Entity<ProjectDetails>()
                 .Property(pd => pd.BonusStatus)
                 .HasDefaultValue(false);
-           
 
-            modelBuilder.Entity<TemplateHeader>();
+
+            modelBuilder.Entity<TemplateHeader>()
+                .Property(th => th.Archived)
+                .HasDefaultValue(false);
 
             modelBuilder.Entity<TemplateDetail>()
                 .HasKey(td => new { td.HeaderId, td.Id });
