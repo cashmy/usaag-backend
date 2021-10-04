@@ -61,15 +61,19 @@ namespace UsaagBackend.Controllers
             return Ok(students);
         }
 
-            // ***** GET A Student by ID *****
-            // <baseurl/api/students
-            [HttpGet("{Id}")]
-        public IActionResult GetById(int Id)
+        // ***** GET ALL Students by Cohort *****
+        // <baseurl/api/students/cohort
+        [HttpGet("cohort/{Id}")]
+        public IActionResult GetByCohort(int Id)
         {
-            var student = _context.Students
-                .Where(s => s.Id == Id)
-                .SingleOrDefault();
-            return Ok(student);
+            var students = _context.Students.ToList()
+                .Where(s => s.CohortId == Id);
+
+            if (students == null)
+            {
+                return NotFound();
+            }
+            return Ok(students);
         }
 
         // ***** ADD A Student *****
