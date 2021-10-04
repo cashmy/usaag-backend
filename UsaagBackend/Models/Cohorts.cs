@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace UsaagBackend.Models
 {
@@ -12,5 +10,9 @@ namespace UsaagBackend.Models
         public string SlackChannel { get; set; }
         public bool? Archived { get; set; }
         public string CPKColor { get; set; }
+        public string TextColor { get; set; }
+
+        [StringLength(3)]
+        public string? Abbreviation { get; set; }
     }
 }

@@ -29,6 +29,22 @@ namespace UsaagBackend.Controllers
             return Ok(cohorts);
         }
 
+        // ***** GET ALL Cohorts by Archive Status *****
+        // <baseurl/api/cohorts/archive/
+        [HttpGet("archive/{Status}")]
+        public IActionResult GetStatus(bool Status)
+        {
+            var cohorts = _context.Cohorts
+                .Where(c => c.Archived == Status)
+                .ToList();
+            if (cohorts == null)
+            {
+                return NotFound();
+            }
+            return Ok(cohorts);
+        }
+
+
         // ***** GET A Cohort by ID *****
         // <baseurl/api/cohorts
         [HttpGet("{Id}")]

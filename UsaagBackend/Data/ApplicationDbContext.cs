@@ -53,6 +53,9 @@ namespace UsaagBackend.Data
             modelBuilder.Entity<Cohorts>()
                 .Property(c => c.CPKColor)
                 .HasDefaultValue("#bdbdbd");
+            modelBuilder.Entity<Cohorts>()
+                .Property(c => c.TextColor)
+                .HasDefaultValue("black");
 
             modelBuilder.Entity<Students>()
                 .Property(c => c.Archived)
