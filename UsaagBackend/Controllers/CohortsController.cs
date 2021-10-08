@@ -1,6 +1,7 @@
 ﻿using UsaagBackend.Data;
 using UsaagBackend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.JsonPatch;
 using System.Linq;
 
 namespace UsaagBackend.Controllers
@@ -82,6 +83,24 @@ namespace UsaagBackend.Controllers
             cohort.Archived = value.Archived;
             cohort.CPKColor = value.CPKColor;
 
+
+            _context.Cohorts.Update(cohort);
+            _context.SaveChanges();
+            return StatusCode(201, cohort);
+        }
+
+        // ***** PATCH A Cohort archived status*****
+        // PATCH /api/cohorts
+        [HttpPatch("{Id}")]
+        public IActionResult Patch(int Id, [FromBody] Cohorts value)
+        {
+            var cohort = _context.Cohorts.Where(c => c.Id == Id).SingleOrDefault();
+            if (cohort == null)
+            {
+                return NotFound("Requested record not found.");
+            }
+
+            cohort.Archived = value.Archived;
 
             _context.Cohorts.Update(cohort);
             _context.SaveChanges();

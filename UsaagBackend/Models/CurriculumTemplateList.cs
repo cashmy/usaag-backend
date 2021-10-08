@@ -19,5 +19,7 @@ namespace UsaagBackend.Models
         public int AssignmentSequence { get; set; }
         public int DayToAssign { get; set; }
         public int ProjectDays { get; set; }
+
+        public string LectureTopics { get; set; }
     }
 }

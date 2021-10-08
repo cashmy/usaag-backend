@@ -13,6 +13,6 @@ namespace UsaagBackend.Models
         public string TextColor { get; set; }
 
         [StringLength(3)]
-        public string? Abbreviation { get; set; }
+        public string Abbreviation { get; set; }
     }
 }
