@@ -13,7 +13,7 @@ namespace UsaagBackend.Models
         public CurriculumThemes CurriculumThemes{ get; set; }
 
         [ForeignKey("TemplateHeader")]
-        public int HeaderId { get; set; }
+        public int? HeaderId { get; set; }
         public TemplateHeader TemplateHeader { get; set; }
 
         public int AssignmentSequence { get; set; }
@@ -21,5 +21,6 @@ namespace UsaagBackend.Models
         public int ProjectDays { get; set; }
 
         public string LectureTopics { get; set; }
+        public string Notes { get; set; }
     }
 }
