@@ -16,7 +16,9 @@ namespace UsaagBackend.Data
         }
 
         public DbSet<CurriculumThemes> CurriculumThemes { get; set; }
-        public DbSet<CurriculumTemplateList> CurriculumTemplateList { get; set; }
+        public DbSet<CurriculumDetail> CurriculumDetail { get; set; }
+        public DbSet<CurriculumType> CurriculumTypes { get; set; }
+
         public DbSet<Cohorts> Cohorts { get; set; }
         public DbSet<Students> Students { get; set; }
         public DbSet<CohortStudents> CohortStudents { get; set; }
@@ -44,8 +46,28 @@ namespace UsaagBackend.Data
 
             modelBuilder.Entity<CurriculumThemes>();
             
-            modelBuilder.Entity<CurriculumTemplateList>()
-                .HasKey(ctl => new { ctl.ThemeId, ctl.HeaderId });
+            modelBuilder.Entity<CurriculumDetail>()
+                .HasKey(cd => new { cd.ThemeId, cd.Id });
+
+            modelBuilder.Entity<CurriculumDetail>()
+                .Property(cd => cd.CurrTypeId)
+                .HasDefaultValue(1);
+
+            modelBuilder.Entity<CurriculumType>()
+                .Property(c => c.Archived)
+                .HasDefaultValue(false);
+            modelBuilder.Entity<CurriculumType>()
+                .HasData(
+                    new CurriculumType { Id = 1, Name = "Note", Abbreviation = "Note", Archived = false, TextColor = "white", ChipColor = "gray"},
+                    new CurriculumType { Id = 2, Name = "Lecture", Abbreviation = "Lect", Archived = false, TextColor = "black", ChipColor = "yellow" },
+                    new CurriculumType { Id = 3, Name = "Demo", Abbreviation = "Demo", Archived = false, TextColor = "black", ChipColor = "orange" },
+                    new CurriculumType { Id = 4, Name = "Worksheet", Abbreviation = "WS", Archived = false, TextColor = "black", ChipColor = "cyan" },
+                    new CurriculumType { Id = 5, Name = "Mini-Lab", Abbreviation = "MLab", Archived = false, TextColor = "white", ChipColor = "blue" },
+                    new CurriculumType { Id = 6, Name = "Lab", Abbreviation = "Lab", Archived = false, TextColor = "white", ChipColor = "darkblue" },
+                    new CurriculumType { Id = 7, Name = "Project", Abbreviation = "Proj", Archived = false, TextColor = "white", ChipColor = "purple" },
+                    new CurriculumType { Id = 8, Name = "Group Capstone", Abbreviation = "GCap", Archived = false, TextColor = "black", ChipColor = "lime" },
+                    new CurriculumType { Id = 9, Name = "Individual Capstone", Abbreviation = "ICap", Archived = false, TextColor = "white", ChipColor = "green" }
+                );    
 
             modelBuilder.Entity<Cohorts>()
                 .Property(c => c.Archived)
