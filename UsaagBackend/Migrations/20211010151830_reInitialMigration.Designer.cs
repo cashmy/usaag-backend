@@ -10,8 +10,8 @@ using UsaagBackend.Data;
 namespace UsaagBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211008030903_AddedNotes")]
-    partial class AddedNotes
+    [Migration("20211010151830_reInitialMigration")]
+    partial class reInitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -269,18 +269,21 @@ namespace UsaagBackend.Migrations
                     b.ToTable("Cohorts");
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.CurriculumTemplateList", b =>
+            modelBuilder.Entity("UsaagBackend.Models.CurriculumDetail", b =>
                 {
                     b.Property<int>("ThemeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HeaderId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("AssignmentSequence")
                         .HasColumnType("int");
 
                     b.Property<int>("DayToAssign")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HeaderId")
                         .HasColumnType("int");
 
                     b.Property<string>("LectureTopics")
@@ -292,11 +295,11 @@ namespace UsaagBackend.Migrations
                     b.Property<int>("ProjectDays")
                         .HasColumnType("int");
 
-                    b.HasKey("ThemeId", "HeaderId");
+                    b.HasKey("ThemeId", "Id");
 
                     b.HasIndex("HeaderId");
 
-                    b.ToTable("CurriculumTemplateList");
+                    b.ToTable("CurriculumDetail");
                 });
 
             modelBuilder.Entity("UsaagBackend.Models.CurriculumThemes", b =>
@@ -305,6 +308,9 @@ namespace UsaagBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool?>("Archived")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("DayTimeStatus")
                         .HasColumnType("bit");
@@ -676,13 +682,11 @@ namespace UsaagBackend.Migrations
                     b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.CurriculumTemplateList", b =>
+            modelBuilder.Entity("UsaagBackend.Models.CurriculumDetail", b =>
                 {
                     b.HasOne("UsaagBackend.Models.TemplateHeader", "TemplateHeader")
                         .WithMany()
-                        .HasForeignKey("HeaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HeaderId");
 
                     b.HasOne("UsaagBackend.Models.CurriculumThemes", "CurriculumThemes")
                         .WithMany()

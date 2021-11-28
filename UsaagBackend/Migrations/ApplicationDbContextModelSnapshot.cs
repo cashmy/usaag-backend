@@ -267,18 +267,29 @@ namespace UsaagBackend.Migrations
                     b.ToTable("Cohorts");
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.CurriculumTemplateList", b =>
+            modelBuilder.Entity("UsaagBackend.Models.CurriculumDetail", b =>
                 {
                     b.Property<int>("ThemeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HeaderId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("AssignmentSequence")
                         .HasColumnType("int");
 
+                    b.Property<int>("CurrTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<int?>("CurriculumTypeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("DayToAssign")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HeaderId")
                         .HasColumnType("int");
 
                     b.Property<string>("LectureTopics")
@@ -290,11 +301,13 @@ namespace UsaagBackend.Migrations
                     b.Property<int>("ProjectDays")
                         .HasColumnType("int");
 
-                    b.HasKey("ThemeId", "HeaderId");
+                    b.HasKey("ThemeId", "Id");
+
+                    b.HasIndex("CurriculumTypeId");
 
                     b.HasIndex("HeaderId");
 
-                    b.ToTable("CurriculumTemplateList");
+                    b.ToTable("CurriculumDetail");
                 });
 
             modelBuilder.Entity("UsaagBackend.Models.CurriculumThemes", b =>
@@ -303,6 +316,9 @@ namespace UsaagBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool?>("Archived")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("DayTimeStatus")
                         .HasColumnType("bit");
@@ -325,6 +341,119 @@ namespace UsaagBackend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CurriculumThemes");
+                });
+
+            modelBuilder.Entity("UsaagBackend.Models.CurriculumType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Abbreviation")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<bool?>("Archived")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("ChipColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TextColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CurriculumTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Abbreviation = "Note",
+                            Archived = false,
+                            ChipColor = "gray",
+                            Name = "Note",
+                            TextColor = "white"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Abbreviation = "Lect",
+                            Archived = false,
+                            ChipColor = "yellow",
+                            Name = "Lecture",
+                            TextColor = "black"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Abbreviation = "Demo",
+                            Archived = false,
+                            ChipColor = "orange",
+                            Name = "Demo",
+                            TextColor = "black"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Abbreviation = "WS",
+                            Archived = false,
+                            ChipColor = "cyan",
+                            Name = "Worksheet",
+                            TextColor = "black"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Abbreviation = "MLab",
+                            Archived = false,
+                            ChipColor = "blue",
+                            Name = "Mini-Lab",
+                            TextColor = "white"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Abbreviation = "Lab",
+                            Archived = false,
+                            ChipColor = "darkblue",
+                            Name = "Lab",
+                            TextColor = "white"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Abbreviation = "Proj",
+                            Archived = false,
+                            ChipColor = "purple",
+                            Name = "Project",
+                            TextColor = "white"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Abbreviation = "GCap",
+                            Archived = false,
+                            ChipColor = "lime",
+                            Name = "Group Capstone",
+                            TextColor = "black"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Abbreviation = "ICap",
+                            Archived = false,
+                            ChipColor = "green",
+                            Name = "Individual Capstone",
+                            TextColor = "white"
+                        });
                 });
 
             modelBuilder.Entity("UsaagBackend.Models.ProjectDetails", b =>
@@ -674,13 +803,15 @@ namespace UsaagBackend.Migrations
                     b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("UsaagBackend.Models.CurriculumTemplateList", b =>
+            modelBuilder.Entity("UsaagBackend.Models.CurriculumDetail", b =>
                 {
+                    b.HasOne("UsaagBackend.Models.CurriculumType", "CurriculumType")
+                        .WithMany()
+                        .HasForeignKey("CurriculumTypeId");
+
                     b.HasOne("UsaagBackend.Models.TemplateHeader", "TemplateHeader")
                         .WithMany()
-                        .HasForeignKey("HeaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HeaderId");
 
                     b.HasOne("UsaagBackend.Models.CurriculumThemes", "CurriculumThemes")
                         .WithMany()
@@ -689,6 +820,8 @@ namespace UsaagBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("CurriculumThemes");
+
+                    b.Navigation("CurriculumType");
 
                     b.Navigation("TemplateHeader");
                 });

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UsaagBackend.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class reInitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,10 @@ namespace UsaagBackend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SlackChannel = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Archived = table.Column<bool>(type: "bit", nullable: true, defaultValue: false)
+                    Archived = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
+                    CPKColor = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "#bdbdbd"),
+                    TextColor = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "black"),
+                    Abbreviation = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -70,26 +73,14 @@ namespace UsaagBackend.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TechnologyStack = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumberOfWeeks = table.Column<int>(type: "int", nullable: false),
-                    DayTimeStatus = table.Column<bool>(type: "bit", nullable: false)
+                    DaysInWeek = table.Column<int>(type: "int", nullable: false),
+                    DayTimeStatus = table.Column<bool>(type: "bit", nullable: false),
+                    Level = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Archived = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CurriculumThemes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Students",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    InstructorSlackChannel = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Students", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,6 +96,7 @@ namespace UsaagBackend.Migrations
                     SpecialNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TotalPoints = table.Column<float>(type: "real", nullable: false),
                     TotalWeightedPoints = table.Column<float>(type: "real", nullable: false),
+                    Archived = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
                     VersionMain = table.Column<int>(type: "int", nullable: false),
                     VersionMinor = table.Column<int>(type: "int", nullable: false),
                     VersionSub = table.Column<int>(type: "int", nullable: false),
@@ -222,54 +214,56 @@ namespace UsaagBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CohortStudents",
+                name: "Students",
                 columns: table => new
                 {
-                    CohortId = table.Column<int>(type: "int", nullable: false),
-                    StudentId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InstructorSlackChannel = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Archived = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
+                    CohortId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CohortStudents", x => new { x.CohortId, x.StudentId });
+                    table.PrimaryKey("PK_Students", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CohortStudents_Cohorts_CohortId",
+                        name: "FK_Students_Cohorts_CohortId",
                         column: x => x.CohortId,
                         principalTable: "Cohorts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CohortStudents_Students_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Students",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CurriculumTemplateList",
+                name: "CurriculumDetail",
                 columns: table => new
                 {
                     ThemeId = table.Column<int>(type: "int", nullable: false),
-                    HeaderId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    HeaderId = table.Column<int>(type: "int", nullable: true),
                     AssignmentSequence = table.Column<int>(type: "int", nullable: false),
                     DayToAssign = table.Column<int>(type: "int", nullable: false),
-                    ProjectDays = table.Column<int>(type: "int", nullable: false)
+                    ProjectDays = table.Column<int>(type: "int", nullable: false),
+                    LectureTopics = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CurriculumTemplateList", x => new { x.ThemeId, x.HeaderId });
+                    table.PrimaryKey("PK_CurriculumDetail", x => new { x.ThemeId, x.Id });
                     table.ForeignKey(
-                        name: "FK_CurriculumTemplateList_CurriculumThemes_ThemeId",
+                        name: "FK_CurriculumDetail_CurriculumThemes_ThemeId",
                         column: x => x.ThemeId,
                         principalTable: "CurriculumThemes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CurriculumTemplateList_TemplateHeader_HeaderId",
+                        name: "FK_CurriculumDetail_TemplateHeader_HeaderId",
                         column: x => x.HeaderId,
                         principalTable: "TemplateHeader",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -353,6 +347,30 @@ namespace UsaagBackend.Migrations
                         name: "FK_TemplateDetail_TemplateHeader_HeaderId",
                         column: x => x.HeaderId,
                         principalTable: "TemplateHeader",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CohortStudents",
+                columns: table => new
+                {
+                    CohortId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CohortStudents", x => new { x.CohortId, x.StudentId });
+                    table.ForeignKey(
+                        name: "FK_CohortStudents_Cohorts_CohortId",
+                        column: x => x.CohortId,
+                        principalTable: "Cohorts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CohortStudents_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -466,8 +484,8 @@ namespace UsaagBackend.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurriculumTemplateList_HeaderId",
-                table: "CurriculumTemplateList",
+                name: "IX_CurriculumDetail_HeaderId",
+                table: "CurriculumDetail",
                 column: "HeaderId");
 
             migrationBuilder.CreateIndex(
@@ -489,6 +507,11 @@ namespace UsaagBackend.Migrations
                 name: "IX_ProjectHeader_HeaderId",
                 table: "ProjectHeader",
                 column: "HeaderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Students_CohortId",
+                table: "Students",
+                column: "CohortId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamAssignments_StudentId",
@@ -527,7 +550,7 @@ namespace UsaagBackend.Migrations
                 name: "CohortStudents");
 
             migrationBuilder.DropTable(
-                name: "CurriculumTemplateList");
+                name: "CurriculumDetail");
 
             migrationBuilder.DropTable(
                 name: "ProjectDetails");
