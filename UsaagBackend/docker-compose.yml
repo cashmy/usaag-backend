@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  usaagbackend:
+    image: ${DOCKER_REGISTRY-}usaagbackend
+    build:
+      context: .
+      dockerfile: Dockerfile
