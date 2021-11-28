@@ -30,7 +30,22 @@ namespace UsaagBackend.Controllers
             return Ok(curriculumThemes);
         }
 
-        // ***** GET A Cohort by ID *****
+        // ***** GET ALL Curriculum Thetmes by Archive Status *****
+        // <baseurl/api/curriculumThemes/archive/
+        [HttpGet("archive/{Status}")]
+        public IActionResult GetStatus(bool Status)
+        {
+            var curriculumThemes = _context.CurriculumThemes
+                .Where(ct => ct.Archived == Status)
+                .ToList();
+            if (curriculumThemes == null)
+            {
+                return NotFound();
+            }
+            return Ok(curriculumThemes);
+        }
+
+        // ***** GET A Curriculum Theme by ID *****
         // <baseurl/api/curriculumThemes
         [HttpGet("{Id}")]
         public IActionResult GetById(int Id)
@@ -42,7 +57,7 @@ namespace UsaagBackend.Controllers
             return Ok(curriculumTheme);
         }
 
-        // ***** ADD A Cohort *****
+        // ***** ADD A Curriculum Theme *****
         // POST /api/curriculumThemes
         [HttpPost]
         public IActionResult Post([FromBody] CurriculumThemes value)
@@ -52,7 +67,7 @@ namespace UsaagBackend.Controllers
             return StatusCode(201, value);
         }
 
-        // ***** UPDATE A Cohort *****
+        // ***** UPDATE A Curriculum Theme *****
         // PUT /api/curriculumThemes
         [HttpPut("{Id}")]
         public IActionResult Put(int Id, [FromBody] CurriculumThemes value)
@@ -68,6 +83,24 @@ namespace UsaagBackend.Controllers
             curriculumTheme.DayTimeStatus = value.DayTimeStatus;
             curriculumTheme.Level = value.Level;
 
+
+            _context.CurriculumThemes.Update(curriculumTheme);
+            _context.SaveChanges();
+            return StatusCode(201, curriculumTheme);
+        }
+
+        // ***** PATCH A Curriculum Theme's Archived status*****
+        // PATCH /api/curriculumThemes
+        [HttpPatch("{Id}")]
+        public IActionResult Patch(int Id, [FromBody] CurriculumThemes value)
+        {
+            var curriculumTheme = _context.CurriculumThemes.Where(c => c.Id == Id).SingleOrDefault();
+            if (curriculumTheme == null)
+            {
+                return NotFound("Requested record not found.");
+            }
+
+            curriculumTheme.Archived = value.Archived;
 
             _context.CurriculumThemes.Update(curriculumTheme);
             _context.SaveChanges();

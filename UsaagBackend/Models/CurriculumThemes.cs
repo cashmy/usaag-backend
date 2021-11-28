@@ -14,6 +14,6 @@ namespace UsaagBackend.Models
         public int DaysInWeek { get; set; } // e.g. 3, 4, or 5 days
         public bool DayTimeStatus { get; set; }
         public string Level { get; set; }  // Beginner, Intermediate, Advanced
-
+        public bool? Archived { get; set; }
     }
 }
