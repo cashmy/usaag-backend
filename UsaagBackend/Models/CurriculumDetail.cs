@@ -25,7 +25,7 @@ namespace UsaagBackend.Models
         public string LectureTopics { get; set; }
         public string Notes { get; set; }
 
-        [ForeignKey("CurriculumTypes")]
+        [ForeignKey("CurriculumType")]
         public int CurrTypeId { get; set; }
         public CurriculumType CurriculumType { get; set; }
 

@@ -3,6 +3,7 @@ using UsaagBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System;
 
 namespace UsaagBackend.Controllers
 {
@@ -24,7 +25,9 @@ namespace UsaagBackend.Controllers
         {
             var curriculumDetail = _context.CurriculumDetail
                 .Where(cd => cd.ThemeId == ThemeId)
+                .Include(cd => cd.CurriculumThemes)
                 .Include(cd => cd.TemplateHeader)
+                .Include(cd => cd.CurriculumType)
                 .ToList();
             if (curriculumDetail == null)
             {
@@ -44,6 +47,7 @@ namespace UsaagBackend.Controllers
                 .Where(cd => cd.ThemeId == ThemeId && cd.Id == Id)
                 .Include(cd => cd.CurriculumThemes)
                 .Include(cd => cd.TemplateHeader)
+                .Include(cd => cd.CurriculumType)
                 .ToList();
             if (curriculumDetail == null)
             {
@@ -57,6 +61,14 @@ namespace UsaagBackend.Controllers
         [HttpPost("{ThemeId}")]
         public IActionResult Post( int ThemeId, [FromBody] CurriculumDetail value)
         {
+            Console.WriteLine(value);
+            var curriculumDetail = _context.CurriculumDetail
+                .Where(cd => cd.ThemeId == ThemeId)
+                .OrderByDescending(cd => cd.Id)
+                .FirstOrDefault();
+
+            value.Id = curriculumDetail.Id + 1;
+
             _context.CurriculumDetail.Add(value);
             _context.SaveChanges();
             return StatusCode(201, value);
@@ -74,10 +86,12 @@ namespace UsaagBackend.Controllers
             {
                 return NotFound("Requested record not found.");
             }
+            curriculumDetail.LectureTopics = value.LectureTopics;
+            curriculumDetail.CurrTypeId = value.CurrTypeId;
             curriculumDetail.AssignmentSequence = value.AssignmentSequence;
             curriculumDetail.DayToAssign = value.DayToAssign;
+            curriculumDetail.HeaderId = value.HeaderId;
             curriculumDetail.ProjectDays = value.ProjectDays;
-            curriculumDetail.LectureTopics = value.LectureTopics;
             curriculumDetail.Notes = value.Notes;
 
             _context.CurriculumDetail.Update(curriculumDetail);
