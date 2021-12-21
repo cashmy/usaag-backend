@@ -82,6 +82,7 @@ namespace UsaagBackend.Controllers
             cohort.SlackChannel = value.SlackChannel;
             cohort.Archived = value.Archived;
             cohort.CPKColor = value.CPKColor;
+            cohort.TextColor = value.TextColor;
 
 
             _context.Cohorts.Update(cohort);
