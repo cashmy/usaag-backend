@@ -83,6 +83,7 @@ namespace UsaagBackend.Controllers
             cohort.Archived = value.Archived;
             cohort.CPKColor = value.CPKColor;
             cohort.TextColor = value.TextColor;
+            cohort.Abbreviation = value.Abbreviation;
 
 
             _context.Cohorts.Update(cohort);
