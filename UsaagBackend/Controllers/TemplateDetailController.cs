@@ -36,6 +36,25 @@ namespace UsaagBackend.Controllers
             return Ok(templateDetails);
         }
 
+        // ***** GET ALL TemplateDetails for a Header by Bonus *****
+        // <baseurl/api/templateDetail/<headerId>/<status>
+        [HttpGet("{HeaderId}/{Status}")]
+        public IActionResult GetByBonus(int HeaderId, bool Status)
+        {
+            var templateDetails = _context.TemplateDetail
+                .Where(td => td.HeaderId == HeaderId && td.BonusStatus == Status)
+                .ToList();
+            if (templateDetails == null)
+            {
+                return NotFound();
+            }
+            // TODO BUILD Template Data Tasks & Column object to return for UI drag and drop
+
+
+
+            return Ok(templateDetails);
+        }
+
         // ***** ADD A Template Detail for a Header *****
         // POST /api/templateDetail/
         [HttpPost]
