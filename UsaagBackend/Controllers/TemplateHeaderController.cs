@@ -68,7 +68,7 @@ namespace UsaagBackend.Controllers
 
         // ***** GET A Template Header & All Detail by ID *****
         // <baseurl/api/templateheader
-        [HttpGet("{Id}")]
+        [HttpGet("/full/{Id}")]
         public IActionResult GetHdrDtlId(int Id)
         {
             var templateHeaders = _context.TemplateHeader
@@ -111,6 +111,24 @@ namespace UsaagBackend.Controllers
             templateHeader.NotionScript = value.NotionScript;
             templateHeader.Abbreviation = value.Abbreviation;
             templateHeader.TechnologyStack = value.TechnologyStack;
+            templateHeader.Archived = value.Archived;
+
+            _context.TemplateHeader.Update(templateHeader);
+            _context.SaveChanges();
+            return StatusCode(201, templateHeader);
+        }
+
+        // ***** PATCH A TemplateHeader archived status*****
+        // PATCH /api/templateHeader
+        [HttpPatch("{Id}")]
+        public IActionResult Patch(int Id, [FromBody] TemplateHeader value)
+        {
+            var templateHeader = _context.TemplateHeader.Where(c => c.Id == Id).SingleOrDefault();
+            if (templateHeader == null)
+            {
+                return NotFound("Requested record not found.");
+            }
+
             templateHeader.Archived = value.Archived;
 
             _context.TemplateHeader.Update(templateHeader);
