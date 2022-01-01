@@ -23,6 +23,7 @@ namespace UsaagBackend.Controllers
         {
             var templateHeaders = _context.TemplateHeader
                 .Where(th => th.Archived == Status)
+                .OrderBy(th => th.Name)
                 .ToList();
             if (templateHeaders == null)
             {

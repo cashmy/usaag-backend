@@ -60,9 +60,25 @@ namespace UsaagBackend.Controllers
         [HttpPost]
         public  IActionResult Post([FromBody]TemplateDetail value) 
         {
+            var templateDetails = _context.TemplateDetail
+                .Where(td => td.HeaderId == value.HeaderId)
+                .ToList();
 
-            // TODO: Handle the Id auto increment (by 10) here
+            if (templateDetails.Count == 0)
+            {
+                value.Id = 1;
+            } 
+            else
+            {
+            // TODO: Handle the Id auto increment here
+                var lastTmpDtlRcd = _context.TemplateDetail
+                    .Where(td => td.HeaderId == value.HeaderId)
+                    .OrderBy(td => td.Id)
+                    .Last();
 
+                value.Id = lastTmpDtlRcd.Id + 1;
+            }
+ 
             _context.TemplateDetail.Add(value);
             _context.SaveChanges();
             return StatusCode(201, value);
