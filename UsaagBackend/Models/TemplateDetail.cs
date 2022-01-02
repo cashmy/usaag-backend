@@ -18,7 +18,7 @@ namespace UsaagBackend.Models
 
         public string Title { get; set; }
         public string Description { get; set; }
-        public int PointValue { get; set; }
+        public float PointValue { get; set; }
         public bool BonusStatus { get; set; }
         public bool GreyHighlight { get; set; }
     }
