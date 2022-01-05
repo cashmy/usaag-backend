@@ -29,10 +29,7 @@ namespace UsaagBackend.Controllers
             {
                 return NotFound();
             }
-            // TODO BUILD Template Data Tasks & Column object to return for UI drag and drop
 
-
-            
             return Ok(templateDetails);
         }
 
@@ -48,10 +45,6 @@ namespace UsaagBackend.Controllers
             {
                 return NotFound();
             }
-            // TODO BUILD Template Data Tasks & Column object to return for UI drag and drop
-
-
-
             return Ok(templateDetails);
         }
 
@@ -128,5 +121,47 @@ namespace UsaagBackend.Controllers
             return StatusCode(204, templateDetail);
         }
 
+        // ***** RESEQUENCE TemplateDetail for a Header *****
+        // POST /api/templateDetail/<headerId>
+        [HttpPost("{HeaderId}")]
+        public IActionResult Post(int HeaderId, [FromBody] TemplateDetail[] tmpDtls)
+        {
+
+            // First remove all details records
+            var templateDetails = _context.TemplateDetail
+                .Where(td => td.HeaderId == HeaderId)
+                .ToList();
+            if (templateDetails == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var templateDetail in templateDetails)
+            {
+                _context.TemplateDetail.Remove(templateDetail);
+                _context.SaveChanges();
+            }
+
+           // Now add detail records in the order given
+           TemplateDetail newTemplateDetail = new TemplateDetail();
+           int Id = 1;
+
+            foreach (TemplateDetail value in tmpDtls)
+            {
+                newTemplateDetail.HeaderId = HeaderId;
+                newTemplateDetail.Id = Id++;
+                newTemplateDetail.Title = value.Title;
+                newTemplateDetail.Description = value.Description;
+                newTemplateDetail.PointValue = value.PointValue;
+                newTemplateDetail.BonusStatus = value.BonusStatus;
+                newTemplateDetail.GreyHighlight = value.GreyHighlight;
+
+                _context.TemplateDetail.Add(newTemplateDetail);
+                _context.SaveChanges();
+            }
+
+            // Return status update
+            return StatusCode(207, "Resequenced " + tmpDtls.Count().ToString() + " records" );
+        }
     }
 }
