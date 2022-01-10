@@ -36,6 +36,23 @@ namespace UsaagBackend.Controllers
             return Ok(curriculumDetail);
         }
 
+        // ***** GET ALL Details for a Template Header (List) *****
+        // <baseurl/api/curriculumDetail/template/<HeaderId>
+        [HttpGet("tempHeader/{HeaderId}")]
+        public IActionResult GetDtlbyTemplate(int HeaderId)
+        {
+            var curriculumDetail = _context.CurriculumDetail
+                .Where(cd => cd.HeaderId == HeaderId)
+                .Include(cd => cd.CurriculumThemes)
+                .Include(ct => ct.CurriculumType)
+                .ToList();
+            if (curriculumDetail == null)
+            {
+                return NotFound();
+            }
+            return Ok(curriculumDetail);
+        }
+
         // ***** GET A Detail Record for a Curriculum Theme (List) *****
         // <baseurl/api/curriculumDetail/<themeId>/<headerId>
         [HttpGet("{ThemeId}/{Id}")]
@@ -118,4 +135,5 @@ namespace UsaagBackend.Controllers
             return StatusCode(204, curriculumDetail);
         }
     }
+
 }
