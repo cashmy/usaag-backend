@@ -24,6 +24,7 @@ namespace UsaagBackend.Controllers
             var templateHeaders = _context.TemplateHeader
                 .Where(th => th.Archived == Status)
                 .OrderBy(th => th.Name)
+                .ThenByDescending(th => th.VersionMain.ToString() + th.VersionMinor.ToString() + th.VersionSub.ToString())
                 .ToList();
             if (templateHeaders == null)
             {
@@ -63,16 +64,14 @@ namespace UsaagBackend.Controllers
             // TODO Refactor to find Latest Version number
             var templateHeader = _context.TemplateHeader
                 .Where(th => th.Name == Name && th.Abbreviation == Abbreviation)
-                .OrderByDescending(th => th.VersionMain)
-                .OrderByDescending(th => th.VersionMinor)
-                .OrderByDescending(th => th.VersionSub)
-                .SingleOrDefault();
+                .OrderByDescending(th => th.VersionMain.ToString() + th.VersionMinor.ToString() + th.VersionSub.ToString() )
+                .FirstOrDefault();
             return Ok(templateHeader);
         }
 
         // ***** GET A Template Header & All Detail by ID *****
         // <baseurl/api/templateheader
-        [HttpGet("/full/{Id}")]
+        [HttpGet("full/{Id}")]
         public IActionResult GetHdrDtlId(int Id)
         {
             var templateHeaders = _context.TemplateHeader
@@ -92,6 +91,58 @@ namespace UsaagBackend.Controllers
             _context.TemplateHeader.Add(value);
             _context.SaveChanges();
             return StatusCode(201, value);
+        }
+
+        // ***** COPY A Template: Header & Detail *****
+        // PATCH /api/templateheader/copy
+        [HttpPatch("copy/{Id}/{Archive}")]
+        public IActionResult Patch(int Id, bool Archive, [FromBody] TemplateHeader versionInfo)
+        {
+            // Get existing header to copy
+            var templateHeader = _context.TemplateHeader.Where(th => th.Id == Id).SingleOrDefault();
+            if (templateHeader == null)
+            {
+                return NotFound("Requested record not found.");
+            }
+            // Archive current record is requested
+            if (Archive)
+            {
+                templateHeader.Archived = true;
+                _context.Update(templateHeader);
+                _context.SaveChanges();
+            }
+            // Setup new record with incoming version info
+            var newTemplateHeader = templateHeader;
+            newTemplateHeader.Id = 0;
+            newTemplateHeader.VersionMain = versionInfo.VersionMain;
+            newTemplateHeader.VersionMinor = versionInfo.VersionMinor;
+            newTemplateHeader.VersionSub = versionInfo.VersionSub;
+            newTemplateHeader.Archived = false;
+
+            // Add new record
+            _context.TemplateHeader.Add(newTemplateHeader);
+            _context.SaveChanges();
+
+            // Save New ID for Details
+            var newHeaderId = newTemplateHeader.Id;
+
+            // Retrieve all Details for old record and copy to new Header record.
+            var templateDetail = _context.TemplateDetail
+                .Where(cd => cd.HeaderId == Id)
+                .ToList();
+            if (templateDetail == null)
+            {
+                return StatusCode(207, "Header Copied - No details found");
+            }
+
+            foreach (var td in templateDetail)
+            {
+                td.HeaderId = newHeaderId;
+                _context.TemplateDetail.Add(td);
+                _context.SaveChanges(true);
+            }
+
+            return StatusCode(207, "Template Header & All Details copies");
         }
 
         // ***** UPDATE A TemplateHeader *****
