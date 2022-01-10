@@ -55,14 +55,17 @@ namespace UsaagBackend.Controllers
             return Ok(templateHeader);
         }
 
-        // ***** GET A Template Header by most Recent Version
+        // ***** GET Latest Recent Version by Name & Abbrev
         // <baseurl>/api/templateHeader/version
-        [HttpGet("/version")]
-        public IActionResult GetHdrByVers()
+        [HttpGet("version/{Name}/{Abbreviation}")]
+        public IActionResult GetHdrByName(string Name, string Abbreviation)
         {
             // TODO Refactor to find Latest Version number
             var templateHeader = _context.TemplateHeader
-                .Where(th => th.VersionMain <= 99)
+                .Where(th => th.Name == Name && th.Abbreviation == Abbreviation)
+                .OrderByDescending(th => th.VersionMain)
+                .OrderByDescending(th => th.VersionMinor)
+                .OrderByDescending(th => th.VersionSub)
                 .SingleOrDefault();
             return Ok(templateHeader);
         }
