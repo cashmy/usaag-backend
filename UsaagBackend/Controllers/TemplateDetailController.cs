@@ -145,6 +145,7 @@ namespace UsaagBackend.Controllers
            // Now add detail records in the order given
            TemplateDetail newTemplateDetail = new TemplateDetail();
            int Id = 1;
+            float TotalPoints = 0;
 
             foreach (TemplateDetail value in tmpDtls)
             {
@@ -155,10 +156,21 @@ namespace UsaagBackend.Controllers
                 newTemplateDetail.PointValue = value.PointValue;
                 newTemplateDetail.BonusStatus = value.BonusStatus;
                 newTemplateDetail.GreyHighlight = value.GreyHighlight;
-
+                if (value.BonusStatus != true)
+                {
+                    TotalPoints += value.PointValue;
+                }
                 _context.TemplateDetail.Add(newTemplateDetail);
                 _context.SaveChanges();
             }
+
+            // TODO: Update Tmp Hdr with Total Pt Value
+            var templateHeader = _context.TemplateHeader
+                .Where(th => th.Id == HeaderId)
+                .SingleOrDefault();
+            templateHeader.TotalPoints = TotalPoints;
+            _context.TemplateHeader.Update(templateHeader);
+            _context.SaveChanges();
 
             // Return status update
             return StatusCode(207, "Resequenced " + tmpDtls.Count().ToString() + " records" );
