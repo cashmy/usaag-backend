@@ -26,7 +26,7 @@ namespace UsaagBackend.Controllers
                 .OrderBy(th => th.Name)
                 .ThenByDescending(th => th.VersionMain.ToString() + th.VersionMinor.ToString() + th.VersionSub.ToString())
                 .ToList();
-            if (templateHeaders == null)
+            if (templateHeaders.Count <= 0)
             {
                 return NotFound();
             }
@@ -108,6 +108,7 @@ namespace UsaagBackend.Controllers
             if (Archive)
             {
                 templateHeader.Archived = true;
+                // templateHeader.NewVersion = true;
                 _context.Update(templateHeader);
                 _context.SaveChanges();
             }
@@ -118,6 +119,8 @@ namespace UsaagBackend.Controllers
             newTemplateHeader.VersionMinor = versionInfo.VersionMinor;
             newTemplateHeader.VersionSub = versionInfo.VersionSub;
             newTemplateHeader.Archived = false;
+            // netTemplateHeader.NewVersion = false;
+            
 
             // Add new record
             _context.TemplateHeader.Add(newTemplateHeader);
@@ -130,7 +133,7 @@ namespace UsaagBackend.Controllers
             var templateDetail = _context.TemplateDetail
                 .Where(cd => cd.HeaderId == Id)
                 .ToList();
-            if (templateDetail == null)
+            if (templateDetail.Count <= 0)
             {
                 return StatusCode(207, "Header Copied - No details found");
             }
